@@ -1,6 +1,9 @@
 [![CI](https://github.com/iwishiwasaneagle/z-nlp/actions/workflows/CI.yml/badge.svg)](https://github.com/iwishiwasaneagle/z-nlp/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/iwishiwasaneagle/z-nlp/branch/master/graph/badge.svg?token=UHOQ3AXSF0)](https://codecov.io/gh/iwishiwasaneagle/z-nlp)
 
+Why? I wanted to learn how to make a solid CLI tool in Python. Maybe learn some C++ bindings along the way.
+As well as this, I wanted to learn how to make something using machine learning of some type.
+
 ## Installation
 
 ```bash
