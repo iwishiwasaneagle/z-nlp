@@ -1,0 +1,78 @@
+name: CI
+
+on:
+    push:
+        branches: [master, dev]
+    pull_request:
+    workflow_dispatch:
+
+env:
+    TOXENVS: test,types
+    PYTHONPATH: /home/runner/work/jpdmgen/jpdmgen/src
+
+jobs:
+  run-tests:
+    runs-on: ${{matrix.platform}}
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        python-version: ["3.8", "3.9"]
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        cache: "pip"
+        python-version: ${{ matrix.python-version }}
+        cache-dependency-path: |
+            requirements.txt
+            tests/requirements.txt
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt -r tests/requirements.txt
+
+    # Don't use tox as caching does not work reliably. Maybe re-visit this in the future.
+    - name: Run tests
+      run: |
+        grep 'test: pytest' tox.ini | sed 's/{posargs} //g' | awk -F':' '{print $2}' | bash
+
+    - uses: codecov/codecov-action@v2.1.0
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: coverage.xml
+        fail_ci_if_error: true
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    env:
+      SKIP: no-commit-to-branch
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+
+    - uses: pre-commit/action@v2.0.3
+
+  run-doc-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        cache: "pip"
+        python-version: "3.9"
+        cache-dependency-path: |
+            requirements.txt
+            docs/requirements.txt
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt -r docs/requirements.txt
+
+    - name: Install pandoc
+      run: sudo apt-get install pandoc
+
+    - name: Run doctests
+      run: sphinx-build --color -b doctest -d docs/_build/doctrees docs docs/_build/doctrees
