@@ -1,0 +1,5 @@
+
+affine
+mypy
+pytest
+pytest-cov
