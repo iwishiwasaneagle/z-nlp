@@ -116,32 +116,3 @@ jobs:
           file_glob: true
           release_name: "Release ${{needs.setup-envs.outputs.version}}"
           body: "${{ needs.generate-changelog.outputs.release_body }}"
-
-  publish-gh-page:
-    name: Publish to Github Pages
-    needs: setup-envs
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
-
-      - name: Install dependencies
-        run: |
-          pip install tox
-          sudo apt-get install pandoc
-
-      - name: Build docs with tox
-        run: tox -e docs
-
-      - name: Upload the docs
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
-        with:
-          branch: gh-pages
-          folder: docs/_build/html/
-          clean-exclude: |
-            .nojekyll
