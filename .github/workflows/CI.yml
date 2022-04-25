@@ -38,7 +38,7 @@ jobs:
       run: |
         grep 'test: pytest' tox.ini | sed 's/{posargs} //g' | awk -F':' '{print $2}' | bash
 
-    - uses: codecov/codecov-action@v2.1.0
+    - uses: codecov/codecov-action@v3.1.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
